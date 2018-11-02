@@ -4,6 +4,7 @@
     v-model="sourceCode"
     language="sol"
     theme="vs-dark"
+    :options="options"
     @change="updateCode">
   </monaco-editor>
 </template>
@@ -12,7 +13,8 @@
     export default {
         data() {
             return {
-                sourceCode:this.value
+                sourceCode:this.value,
+                options:{automaticLayout: true}
             }
         },
         components: { MonacoEditor },
@@ -30,6 +32,6 @@
 .editor {
   width: 99%;
   margin: 10px auto;
-  height: 500px;
+  height: 800px;
 }
 </style>

@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -9,7 +8,8 @@ export default new Vuex.Store({
       show: false,
       content: "Default",
       title: ""
-    }
+    },
+    smartContractCode: "Write solidity here ..."
   },
   mutations: {
     showAlert (state, payload) {
@@ -19,6 +19,9 @@ export default new Vuex.Store({
     },
     closeAlert(state){
       state.alertbox.show=false;
+    },
+    setSmartContractCode(state,code){
+      state.smartContractCode=code;
     }
   },
   actions: {

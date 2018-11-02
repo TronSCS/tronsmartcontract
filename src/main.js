@@ -12,6 +12,7 @@ Vue.config.productionTip = false
 Vue.prototype.$alert = function (title,content) {
       store.commit('showAlert', {title:title,content:content})
 }
+
 new Vue({
   router,
   store,

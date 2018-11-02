@@ -10,6 +10,7 @@
   "dependencies": {
     "@vue/ui": "^0.5.6",
     "browser-solc": "^1.0.0",
+    "raw-loader": "^0.5.1",
     "vue": "^2.5.17",
     "vue-monaco": "^0.2.0",
     "vue-router": "^3.0.1",

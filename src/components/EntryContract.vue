@@ -80,12 +80,12 @@
                 this.loading = true;
                 let result = await window.tronWeb.getEventResult(this.address, 0, eventName);
                 result = result.filter((thing, index, self) => self.findIndex(t => t.transaction === thing.transaction && t.timestamp === thing.timestamp) === index)
-                this.result = "<table>";
+                this.result = "<table class='event-table'>";
 
                 result.forEach(i => {
                     let { timestamp, transaction, block, result } = i;
                     let date = new Date(timestamp)
-                    this.result += "<tr><td>⚡ " + (date.toLocaleString() + "</td><td><a target='_blank' href='" + this.tronexplorer + "/transaction/" + transaction + "'>" + transaction.substr(0, 5) + "...</a></td><td>Result: " + JSON.stringify(result) + '</td></tr>');
+                    this.result += "<tr><td>⚡ " + (date.toLocaleString() + "</td><td><a target='_blank' href='" + this.tronexplorer + "/transaction/" + transaction + "'>" + transaction.substr(0, 15) + "...</a></td><td>Result: " + JSON.stringify(result) + '</td></tr>');
                 })
                 this.result += "</table>"
                 this.loading = false;
@@ -115,5 +115,8 @@
 
     .contract-entry .vue-ui-button {
         margin: 10px;
+    }
+    .event-table{
+        font-size:11px;
     }
 </style>

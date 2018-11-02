@@ -7,11 +7,14 @@
           <VueGroupButton class="round" value="InteractSmartContract" icon-left="visibility">Interact</VueGroupButton>
           <VueGroupButton class="round" value="ComposeSmartContract" icon-left="code">Compose</VueGroupButton>
           <VueGroupButton class="round" value="VerifySmartContract" icon-left="verified_user">Verify</VueGroupButton>
+          <VueGroupButton class="round" value="AccountInfor" icon-left="account_balance_wallet">Account Infor</VueGroupButton>
+          <VueGroupButton class="round" value="Author" icon-left="help">About us</VueGroupButton>
+
     </VueGroup>
      <div class="content">
       <router-view/>
     </div>
-    <div id="footer">
+    <div id="footer" v-show="currentPage!='ComposeSmartContract'">
     Made with <span style="color: #e25555;">&#9829;</span> by <a href="#/author">KhanhND69</a>
     </div>
     <VueModal
@@ -31,6 +34,8 @@
 
 <script>
   import { mapMutations } from 'vuex'
+  import code from '!raw-loader!./assets/DemoContract.sol'
+
   export default {
     data() {
       return {
@@ -39,6 +44,8 @@
     },
     mounted(){
       this.currentPage=this.$router.currentRoute.name;
+      console.log(code);
+      this.$store.state.smartContractCode=code;
     },
     computed: {
       alertbox() {

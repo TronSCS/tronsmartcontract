@@ -1,16 +1,17 @@
 <template>
     <div id="complie-command">
-        <span>Solidity verison: </span>
+        <small>Solidity verison: </small>
         <VueSelect v-model="currentSolcVer">
           <VueSelectButton v-for="item in solcVersFormat" :key="item.ver" :value="item.src" :label="item.ver"/>
         </VueSelect>
         <VueButton :loading-secondary="loading" class="primary" icon-left="check_circle" @click="complie">Complie</VueButton>
-        <span> ==>> </span>
-        <VueSelect :disabled="!success" v-model="currentContractName">
+        <small> and select contract </small>
+        <VueSelect :disabled="!showDeploy" v-model="currentContractName" style="width: 200px;">
           <VueSelectButton v-for="(item,key) in contracts" :key="key" :value="key" :label="key"/>
         </VueSelect>
-        <VueButton :disabled="!success" :loading-secondary="deploying" class="accent" icon-left="cloud_done" @click="showDeployBox()">Deploy</VueButton>
-        <div class="compile-result" :style="{color: (success?'green':'red')}" v-html="consoleResult">{{consoleResult}}</div>
+        <VueButton :disabled="!showDeploy" :loading-secondary="deploying" class="accent" icon-left="cloud_done" @click="showDeployBox()">Deploy it!</VueButton>
+        <VueButton class="icon-button success" :icon-left="showResult?'expand_more':'expand_less'" @click="showResult=!showResult"></VueButton>
+        <div class="compile-result" :style="{color: (success?'green':'red'), display: (showResult?'block':'none')}" v-html="consoleResult">{{consoleResult}}</div>
         <VueModal
         v-if="deployBox.show"
         :title="deployBox.title"
@@ -61,7 +62,9 @@
                     title:"Deploy contract"
                 },
                 currentContractDeployInputs:[],
-                currentContractDeployInputValues:[]
+                currentContractDeployInputValues:[],
+                showDeploy:false,
+                showResult:true
             }
         },
         computed: {
@@ -77,8 +80,7 @@
                 let params = [];
                 this.currentContractDeployInputs.forEach((item,key)=>{
                     let currentInputValue=this.currentContractDeployInputValues[key]?this.currentContractDeployInputValues[key]:"";
-                    let param={type:item.type,value:currentInputValue}
-                    params.push(param);
+                    params.push(currentInputValue);
                 })
                 return params;
             }
@@ -111,6 +113,7 @@
         },
         methods: {
             complie: async function() {
+                this.showDeploy=false;
                 this.loading = true;
                 this.contracts=[];
                 this.compiler = await getCompiler(this.currentSolcVer);
@@ -130,6 +133,7 @@
                         this.consoleResult += "👌" + contract + ":\n " + result.contracts[contract].interface + "\n"
                     }
                     this.contracts = result.contracts;
+                    this.showDeploy=true;
                 }
             },
             showDeployBox: function(){
@@ -179,14 +183,16 @@
                         } while (!transactionInfo.id);
                     }
                     else {
+                        this.success = false;
                         this.consoleResult += (`FAILED to broadcast ${this.currentContractName} deploy transaction`) + '\n';
-                        this.consoleResult += (broadcastResult) + '\n';
+                        // console.log(broadcastResult);
+                        this.consoleResult += (broadcastResult.code) + '\n';
                     }
                     this.deploying = false;
                 }
                 catch (e) {
+                    this.success = false;
                     this.$alert("Warning", JSON.stringify(e));
-                    this.success=false;
                     this.consoleResult="Deploy fail!"
                     this.deploying = false;
                 }
