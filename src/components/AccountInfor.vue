@@ -11,6 +11,7 @@
     </div>
 </template>
 <script>
+import {FormatNumber} from '@/utils/FormatNumber'
     export default {
         data() {
             return {
@@ -37,12 +38,12 @@
                 this.defaultAddress = window.tronWeb.defaultAddress;
                 this.currentNetWork=window.tronWeb.eventServer == "https://api.trongrid.io"?"Main net": "Testnet";
                 this.balance=(await window.tronWeb.trx.getBalance(this.defaultAddress.hex))/1000000;
-                let account=(await window.tronWeb.trx.getAccount(tronWeb.defaultAddress.hex));
+                let account=(await window.tronWeb.trx.getAccount(window.tronWeb.defaultAddress.hex));
                 this.energyUsed= account.account_resource.energy_usage
                 this.totalEnergy=account.account_resource.frozen_balance_for_energy.frozen_balance
             },
             formatNum:function(input){
-                return input.toFixed(1).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                return FormatNumber(input)
             }
         }
     }

@@ -18,7 +18,12 @@
         locked
         class="small"
         >
+            <div>
+                <p><small>Input contract name</small></p>
+                <VueInput v-model="currentContractDeployName" placeholder="Contract name"></VueInput>
+            </div>
             <div class="default-body">
+                <p><small>Params for constructor</small></p>
                 <VueInput v-for="(input,key) in currentContractDeployInputs" v-key="key" v-model="currentContractDeployInputValues[key]" :placeholder="input.name +' - ' + input.type" />
             </div>
 
@@ -31,6 +36,8 @@
 </template>
 <script>
     import browserSolc from 'browser-solc';
+    import {FormatNumber} from '@/utils/FormatNumber'
+
     const getCompiler = function(version) {
         return new Promise((resolve, reject) => {
             window.BrowserSolc.loadVersion(version, (compiler) => {
@@ -63,6 +70,7 @@
                 },
                 currentContractDeployInputs:[],
                 currentContractDeployInputValues:[],
+                currentContractDeployName:"",
                 showDeploy:false,
                 showResult:true
             }
@@ -142,6 +150,7 @@
                     this.currentContractDeployInputs= constructorFunction.inputs;
                 else
                     this.currentContractDeployInputs=[];
+                this.currentContractDeployName=this.currentContractName;
                 this.deployBox.show=true;
 
             },
@@ -152,12 +161,13 @@
                     this.deployBox.show=false;
                     this.deploying = true;
                     this.consoleResult = "";
-                    this.consoleResult += "Deploy " + this.currentContractName + '\n';
+                    this.consoleResult += "Deploy " + this.currentContractDeployName + '\n';
                     let currentContractObject=this.contracts[this.currentContractName];
                     const unsigned = await window.tronWeb.transactionBuilder.createSmartContract({
                         abi: currentContractObject.interface,
                         bytecode: currentContractObject.bytecode,
-                        parameters: this.currentContractDeployParameters
+                        parameters: this.currentContractDeployParameters,
+                        name: this.currentContractDeployName
                     });
                     const signed = await window.tronWeb.trx.sign(unsigned);
                     const broadcastResult = await window.tronWeb.trx.sendRawTransaction(signed);
@@ -166,15 +176,16 @@
                         do {
                             transactionInfo = await window.tronWeb.trx.getTransactionInfo(signed.txID);
                             if (transactionInfo.id && transactionInfo.receipt.result === 'SUCCESS') {
+                                console.log(transactionInfo);
                                 if (transactionInfo.receipt.result) {
                                     this.success = true;
-                                    this.consoleResult += (`SUCCESSFULLY deployed ${this.currentContractName}. Cost: ${transactionInfo.receipt.energy_fee / 1000000} TRX.`) + '\n';
+                                    this.consoleResult += (`SUCCESSFULLY deployed ${this.currentContractDeployName}. Cost: ${(transactionInfo.receipt.energy_fee?transactionInfo.receipt.energy_fee:0) / 1000000} TRX, ${FormatNumber(transactionInfo.receipt.energy_usage)} energy`) + '\n';
                                     let base58Adress=window.tronWeb.address.fromHex(signed.contract_address);
                                     this.consoleResult += (`Contract address: <a target='_blank' href='#/interact/${base58Adress}'>${base58Adress}</a>`) + '\n';
                                 }
                                 else {
                                     this.success = false;
-                                    this.consoleResult += (`FAILED deploying ${this.currentContractName}. Cost: ${transactionInfo.receipt.energy_fee / 1000000} TRX.`) + '\n';
+                                    this.consoleResult += (`FAILED deploying ${this.currentContractDeployName}. Cost: ${transactionInfo.receipt.energy_fee / 1000000} TRX.`) + '\n';
                                     this.consoleResult += (`transaction info:`) + '\n';
                                     this.consoleResult += (transactionInfo) + '\n';
 
