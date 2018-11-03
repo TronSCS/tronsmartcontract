@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import InteractSmartContract from './components/InteractSmartContract.vue'
-import ComposeSmartContract from './components/ComposeSmartContract.vue'
-import VerifySmartContract from './components/VerifySmartContract.vue'
-import AccountInfor from './components/AccountInfor.vue'
-import Author from './components/Author.vue'
+import PageInteractSmartContract from './components/PageInteractSmartContract.vue'
+import PageComposeSmartContract from './components/PageComposeSmartContract.vue'
+import PageVerifySmartContract from './components/PageVerifySmartContract.vue'
+import PageAccountInfor from './components/PageAccountInfor.vue'
+import PageAuthor from './components/PageAuthor.vue'
 
 Vue.use(Router)
 
@@ -12,33 +12,33 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'InteractSmartContract',
-      component: InteractSmartContract,    
+      name: 'PageInteractSmartContract',
+      component: PageInteractSmartContract,    
     },
     {
       path: '/interact/:Address',
-      name: 'InteractSmartContractUrl',
-      component: InteractSmartContract,
+      name: 'PageInteractSmartContractUrl',
+      component: PageInteractSmartContract,
     },
     {
       path: '/compose',
-      name: 'ComposeSmartContract',
-      component: ComposeSmartContract,
+      name: 'PageComposeSmartContract',
+      component: PageComposeSmartContract,
     },
     {
       path: '/verify',
-      component: VerifySmartContract,
-      name: 'VerifySmartContract'
+      component: PageVerifySmartContract,
+      name: 'PageVerifySmartContract'
     },
     {
       path: '/account',
-      component: AccountInfor,
-      name: 'AccountInfor'
+      component: PageAccountInfor,
+      name: 'PageAccountInfor'
     },
     {
       path: '/author',
-      component: Author,
-      name: 'Author'
+      component: PageAuthor,
+      name: 'PageAuthor'
     },
   ],
 })

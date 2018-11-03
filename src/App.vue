@@ -1,20 +1,20 @@
 <template>
   <div id="app">
-    <vue-typed-js :loop="true" :strings="['Smart Contract', 'Free', 'Fast']" v-show="currentPage=='InteractSmartContract'||currentPage=='InteractSmartContractUrl'">
+    <vue-typed-js :loop="true" :strings="['Smart Contract', 'Free', 'Fast']" v-show="currentPage=='PageInteractSmartContract'||currentPage=='PageInteractSmartContractUrl'">
         <div id="main-title"><img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Tron.network_logo.svg"><p><span class="typing"></span></p></div>
     </vue-typed-js>
     <VueGroup id="navigator" v-model="currentPage" class="primary top-indicator inline small-indicator" indicator>
-          <VueGroupButton class="round" value="InteractSmartContract" icon-left="visibility">Interact</VueGroupButton>
-          <VueGroupButton class="round" value="ComposeSmartContract" icon-left="code">Compose</VueGroupButton>
-          <VueGroupButton class="round" value="VerifySmartContract" icon-left="verified_user">Verify</VueGroupButton>
-          <VueGroupButton class="round" value="AccountInfor" icon-left="account_balance_wallet">Account Infor</VueGroupButton>
-          <VueGroupButton class="round" value="Author" icon-left="help">About us</VueGroupButton>
+          <VueGroupButton class="round" value="PageInteractSmartContract" icon-left="visibility">Interact</VueGroupButton>
+          <VueGroupButton class="round" value="PageComposeSmartContract" icon-left="code">Compose</VueGroupButton>
+          <VueGroupButton class="round" value="PageVerifySmartContract" icon-left="verified_user">Verify</VueGroupButton>
+          <VueGroupButton class="round" value="PageAccountInfor" icon-left="account_balance_wallet">Account Infor</VueGroupButton>
+          <VueGroupButton class="round" value="PageAuthor" icon-left="help">About us</VueGroupButton>
 
     </VueGroup>
      <div class="content">
       <router-view/>
     </div>
-    <div id="footer" v-show="currentPage!='ComposeSmartContract'">
+    <div id="footer" v-show="currentPage!='PageComposeSmartContract'">
     Made with <span style="color: #e25555;">&#9829;</span> by <a href="#/author">KhanhND69</a>
     </div>
     <VueModal
