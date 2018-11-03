@@ -13,7 +13,7 @@
     export default {
         data() {
             return {
-                sourceCode:"",
+                sourceCode:this.value,
                 options:{automaticLayout: true}
             }
         },
