@@ -44,7 +44,6 @@
     },
     mounted(){
       this.currentPage=this.$router.currentRoute.name;
-      console.log(code);
       this.$store.state.smartContractCode=code;
     },
     computed: {

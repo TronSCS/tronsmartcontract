@@ -13,8 +13,13 @@
     export default {
         data() {
             return {
-                sourceCode:this.value,
+                sourceCode:"",
                 options:{automaticLayout: true}
+            }
+        },
+        watch:{
+            value:function(val){
+                this.sourceCode=val;
             }
         },
         components: { MonacoEditor },
