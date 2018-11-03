@@ -11,6 +11,7 @@
         </VueSelect>
         <VueButton :disabled="!showDeploy" :loading-secondary="deploying" class="accent" icon-left="cloud_done" @click="showDeployBox()">Deploy it!</VueButton>
         <VueButton class="icon-button success" :icon-left="showResult?'expand_more':'expand_less'" @click="showResult=!showResult"></VueButton>
+        <VueButton class="primary" @click="saveAs()">Save to File</VueButton>
         <div class="compile-result" :style="{color: (success?'green':'red'), display: (showResult?'block':'none')}" v-html="consoleResult">{{consoleResult}}</div>
         <VueModal
         v-if="deployBox.show"
@@ -36,7 +37,8 @@
 </template>
 <script>
     import browserSolc from 'browser-solc';
-    import {FormatNumber} from '@/utils/FormatNumber'
+    import { FormatNumber } from '@/utils/FormatNumber'
+    import { SaveToFile } from '@/utils/SaveToFile'
 
     const getCompiler = function(version) {
         return new Promise((resolve, reject) => {
@@ -64,15 +66,15 @@
                 contracts: [],
                 currentContractName: "",
                 deploying: false,
-                deployBox:{
-                    show:false,
-                    title:"Deploy contract"
+                deployBox: {
+                    show: false,
+                    title: "Deploy contract"
                 },
-                currentContractDeployInputs:[],
-                currentContractDeployInputValues:[],
-                currentContractDeployName:"",
-                showDeploy:false,
-                showResult:true
+                currentContractDeployInputs: [],
+                currentContractDeployInputValues: [],
+                currentContractDeployName: "",
+                showDeploy: false,
+                showResult: true
             }
         },
         computed: {
@@ -86,8 +88,8 @@
             },
             currentContractDeployParameters: function() {
                 let params = [];
-                this.currentContractDeployInputs.forEach((item,key)=>{
-                    let currentInputValue=this.currentContractDeployInputValues[key]?this.currentContractDeployInputValues[key]:"";
+                this.currentContractDeployInputs.forEach((item, key) => {
+                    let currentInputValue = this.currentContractDeployInputValues[key] ? this.currentContractDeployInputValues[key] : "";
                     params.push(currentInputValue);
                 })
                 return params;
@@ -111,19 +113,19 @@
             // this.status = "Compile";
             // 
         },
-        watch:{
-            source:function(val){
-                let sourceVersion= val.match(/\^(.*?)\;/g)[0].substr(1).slice(0, -1);
-                let findVersion=this.solcVersFormat.find(e=>e.ver==sourceVersion);
-                if(typeof findVersion =='object')
-                    this.currentSolcVer=findVersion.src;
+        watch: {
+            source: function(val) {
+                let sourceVersion = val.match(/\^(.*?)\;/g)[0].substr(1).slice(0, -1);
+                let findVersion = this.solcVersFormat.find(e => e.ver == sourceVersion);
+                if (typeof findVersion == 'object')
+                    this.currentSolcVer = findVersion.src;
             }
         },
         methods: {
             complie: async function() {
-                this.showDeploy=false;
+                this.showDeploy = false;
                 this.loading = true;
-                this.contracts=[];
+                this.contracts = [];
                 this.compiler = await getCompiler(this.currentSolcVer);
                 let result = this.compiler(this.source, 1);
                 console.log(result);
@@ -141,28 +143,28 @@
                         this.consoleResult += "👌" + contract + ":\n " + result.contracts[contract].interface + "\n"
                     }
                     this.contracts = result.contracts;
-                    this.showDeploy=true;
+                    this.showDeploy = true;
                 }
             },
-            showDeployBox: function(){
-                let constructorFunction=JSON.parse(this.contracts[this.currentContractName].interface).find(e=>e.type=="constructor");
-                if(typeof constructorFunction == 'object')
-                    this.currentContractDeployInputs= constructorFunction.inputs;
+            showDeployBox: function() {
+                let constructorFunction = JSON.parse(this.contracts[this.currentContractName].interface).find(e => e.type == "constructor");
+                if (typeof constructorFunction == 'object')
+                    this.currentContractDeployInputs = constructorFunction.inputs;
                 else
-                    this.currentContractDeployInputs=[];
-                this.currentContractDeployName=this.currentContractName;
-                this.deployBox.show=true;
+                    this.currentContractDeployInputs = [];
+                this.currentContractDeployName = this.currentContractName;
+                this.deployBox.show = true;
 
             },
             deploy: async function() {
                 try {
                     if (!window.tronWeb) throw 'You must install Tronlink to interact with contract';
                     if (!(window.tronWeb && window.tronWeb.ready)) throw 'You must login Tronlink to interact with contract';
-                    this.deployBox.show=false;
+                    this.deployBox.show = false;
                     this.deploying = true;
                     this.consoleResult = "";
                     this.consoleResult += "Deploy " + this.currentContractDeployName + '\n';
-                    let currentContractObject=this.contracts[this.currentContractName];
+                    let currentContractObject = this.contracts[this.currentContractName];
                     const unsigned = await window.tronWeb.transactionBuilder.createSmartContract({
                         abi: currentContractObject.interface,
                         bytecode: currentContractObject.bytecode,
@@ -180,7 +182,7 @@
                                 if (transactionInfo.receipt.result) {
                                     this.success = true;
                                     this.consoleResult += (`SUCCESSFULLY deployed ${this.currentContractDeployName}. Cost: ${(transactionInfo.receipt.energy_fee?transactionInfo.receipt.energy_fee:0) / 1000000} TRX, ${FormatNumber(transactionInfo.receipt.energy_usage)} energy`) + '\n';
-                                    let base58Adress=window.tronWeb.address.fromHex(signed.contract_address);
+                                    let base58Adress = window.tronWeb.address.fromHex(signed.contract_address);
                                     this.consoleResult += (`Contract address: <a target='_blank' href='#/interact/${base58Adress}'>${base58Adress}</a>`) + '\n';
                                 }
                                 else {
@@ -204,9 +206,12 @@
                 catch (e) {
                     this.success = false;
                     this.$alert("Warning", JSON.stringify(e));
-                    this.consoleResult="Deploy fail!"
+                    this.consoleResult = "Deploy fail!"
                     this.deploying = false;
                 }
+            },
+            saveAs: function(){
+                SaveToFile(this.source,this.currentContractName.substring(1)+window.Date.now()+".solc")
             }
         }
     }

@@ -1,11 +1,10 @@
 <template>
-    <div class="main-content">
-        <p>Undercontructor</p>
-        <img src="@/assets/build.svg"/>
+    <div class="verify-contract">
+        <h4>Under constructor</h4>
     </div>
 </template>
 <style type="text/css">
-    .main-content {
+    .verify-contract {
         display: block;
         margin: 100px auto;
         width: fit-content;
