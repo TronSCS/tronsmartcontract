@@ -4,7 +4,7 @@
       <VueInput v-model="address" placeholder="Type address of smartcontract"/>
       <VueButton class="primary" icon-left="search" @click="load()" :loading-secondary="loading">Show contract</VueButton>
     </div>
-    <InteractSmartContract :abi="abi" :address="address"></InteractSmartContract>
+    <InteractSmartContract v-if="contract['abi']!=undefined" :contract="contract"></InteractSmartContract>
   </div>
 </template>
 
@@ -15,7 +15,7 @@
     data: () => {
       return {
         address: "",
-        abi: {},
+        contract:{},
         loading:false
       }
     },
@@ -39,7 +39,7 @@
           if (!window.tronWeb) throw 'You must install Tronlink to interact with contract';
           if (!(window.tronWeb && window.tronWeb.ready)) throw 'You must login Tronlink to interact with contract';
           let smartcontract = await window.tronWeb.trx.getContract(this.address);
-          this.abi = smartcontract.abi;
+          this.contract=smartcontract;
         }
         catch (e) {
           this.$alert("Warning", JSON.stringify(e))

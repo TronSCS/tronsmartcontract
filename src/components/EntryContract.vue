@@ -22,6 +22,7 @@
 
 </template>
 <script>
+import {getTronExplorer} from '@/utils/Tron'
     export default {
         name: 'EntryContract',
         props: {
@@ -44,9 +45,6 @@
                     submitValueFormat.push(this.submitValues[i]);
                 }
                 return submitValueFormat;
-            },
-            tronexplorer: function() {
-                return window.tronWeb.eventServer.indexOf("shasta")>0?"https://explorer.shasta.trongrid.io":"https://tronscan.org/#";
             }
         },
         mounted: function() {
@@ -85,7 +83,7 @@
                 result.forEach(i => {
                     let { timestamp, transaction, block, result } = i;
                     let date = new Date(timestamp)
-                    this.result += "<tr><td>⚡ " + (date.toLocaleString() + "</td><td><a target='_blank' href='" + this.tronexplorer + "/transaction/" + transaction + "'>" + transaction.substr(0, 15) + "...</a></td><td>Result: " + JSON.stringify(result) + '</td></tr>');
+                    this.result += "<tr><td>⚡ " + (date.toLocaleString() + "</td><td><a target='_blank' href='" + getTronExplorer + "/transaction/" + transaction + "'>" + transaction.substr(0, 15) + "...</a></td><td>Result: " + JSON.stringify(result) + '</td></tr>');
                 })
                 this.result += "</table>"
                 this.loading = false;
