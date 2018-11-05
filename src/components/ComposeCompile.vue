@@ -36,6 +36,8 @@
     </div>
 </template>
 <script>
+    // eslint-disable-next-line 
+    import browserSolc from 'browser-solc';
     import { FormatNumber } from '@/utils/FormatNumber'
     import { SaveToFile } from '@/utils/SaveToFile'
 
