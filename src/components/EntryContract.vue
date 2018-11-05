@@ -2,7 +2,7 @@
     <div class="contract-entry">
         <p><small>{{entry.type}}</small> {{entry.name}}</p>
         <template v-if="entry.type!='Event'">
-            <VueInput v-for="input in entry.inputs"  :placeholder="input.name +' - ' + input.type" v-model="submitValues[input.name]"/>
+            <VueInput v-for="input in entry.inputs" :key="input.name"  :placeholder="input.name +' - ' + input.type" v-model="submitValues[input.name]"/>
             <template v-if="entry.stateMutability=='Payable'">
                 <VueInput placeholder="Trx (sun) to Send" v-model="callValue"/>
                 <VueButton :loading-secondary="loading" class="success" icon-left="send" @click="Send">Send</VueButton>
@@ -81,7 +81,7 @@ import {getTronExplorer} from '@/utils/Tron'
                 this.result = "<table class='event-table'>";
 
                 result.forEach(i => {
-                    let { timestamp, transaction, block, result } = i;
+                    let { timestamp, transaction, result } = i;
                     let date = new Date(timestamp)
                     this.result += "<tr><td>⚡ " + (date.toLocaleString() + "</td><td><a target='_blank' href='" + getTronExplorer + "/transaction/" + transaction + "'>" + transaction.substr(0, 15) + "...</a></td><td>Result: " + JSON.stringify(result) + '</td></tr>');
                 })

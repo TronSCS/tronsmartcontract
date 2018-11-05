@@ -25,7 +25,7 @@
             </div>
             <div class="default-body">
                 <p><small>Params for constructor</small></p>
-                <VueInput v-for="(input,key) in currentContractDeployInputs" v-key="key" v-model="currentContractDeployInputValues[key]" :placeholder="input.name +' - ' + input.type" />
+                <VueInput v-for="(input,key) in currentContractDeployInputs" :key="key" v-model="currentContractDeployInputValues[key]" :placeholder="input.name +' - ' + input.type" />
             </div>
 
             <div slot="footer" class="actions">
@@ -36,7 +36,6 @@
     </div>
 </template>
 <script>
-    import browserSolc from 'browser-solc';
     import { FormatNumber } from '@/utils/FormatNumber'
     import { SaveToFile } from '@/utils/SaveToFile'
 
@@ -115,7 +114,7 @@
         },
         watch: {
             source: function(val) {
-                let sourceVersion = val.match(/\^(.*?)\;/g)[0].substr(1).slice(0, -1);
+                let sourceVersion = val.match(/\^(.*?);/g)[0].substr(1).slice(0, -1);
                 let findVersion = this.solcVersFormat.find(e => e.ver == sourceVersion);
                 if (typeof findVersion == 'object')
                     this.currentSolcVer = findVersion.src;

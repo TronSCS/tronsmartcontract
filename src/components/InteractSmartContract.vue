@@ -6,25 +6,25 @@
     </div>
     <div class="contract-content">
       <p>Run function with trx</p>
-      <div v-for="entry in this.abi.entrys" v-if="entry.type=='Function' && entry.stateMutability=='Payable'">
+      <div v-for="entry in this.abi.entrys" v-if="entry.type=='Function' && entry.stateMutability=='Payable'" :key="entry.name">
          <EntryContract :entry="entry" :address="address"/>
       </div>
     </div>
     <div class="contract-content">
       <p>Run function will consume Trx or Energy</p>
-      <div v-for="entry in this.abi.entrys" v-if="entry.type=='Function' && entry.stateMutability=='Nonpayable'">
+      <div v-for="entry in this.abi.entrys" :key="entry.name" v-if="entry.type=='Function' && entry.stateMutability=='Nonpayable'">
          <EntryContract :entry="entry" :address="address"/>
       </div>
     </div>
     <div class="contract-content">
       <p>Run function no consume anything</p>
-      <div v-for="entry in this.abi.entrys" v-if="entry.type=='Function' && (entry.stateMutability=='View' || entry.stateMutability=='Pure')">
+      <div v-for="entry in this.abi.entrys" :key="entry.name" v-if="entry.type=='Function' && (entry.stateMutability=='View' || entry.stateMutability=='Pure')">
          <EntryContract :entry="entry" :address="address"/>
       </div>
     </div>
     <div class="contract-content">
       <p>Events</p>
-      <div v-for="entry in this.abi.entrys" v-if="entry.type=='Event'">
+      <div v-for="entry in this.abi.entrys" :key="entry.name" v-if="entry.type=='Event'">
          <EntryContract :entry="entry" :address="address"/>
       </div>
     </div>

@@ -27,7 +27,7 @@
             value: String,
         },
         methods: {
-           updateCode:function(val,e){
+           updateCode:function(val){
                this.$emit('input', val)
            }
         }
