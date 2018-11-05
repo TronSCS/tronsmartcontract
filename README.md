@@ -1,4 +1,5 @@
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/TronSCS/tronsmartcontract.svg?columns=all)](https://waffle.io/TronSCS/tronsmartcontract)
+[![Build Status](https://travis-ci.org/TronSCS/tronsmartcontract.svg?branch=master)](https://travis-ci.org/TronSCS/tronsmartcontract)
 
 ## Project setup
 ```
