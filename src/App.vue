@@ -9,7 +9,6 @@
           <VueGroupButton class="round" value="PageVerifySmartContract" icon-left="verified_user">Verify</VueGroupButton>
           <VueGroupButton class="round" value="PageAccountInfor" icon-left="account_balance_wallet">Account Infor</VueGroupButton>
           <VueGroupButton class="round" value="PageAuthor" icon-left="help">About us</VueGroupButton>
-
     </VueGroup>
      <div class="content">
       <router-view/>

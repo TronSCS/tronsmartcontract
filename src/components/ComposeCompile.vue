@@ -200,6 +200,7 @@
                         this.consoleResult += (`FAILED to broadcast ${this.currentContractName} deploy transaction`) + '\n';
                         // console.log(broadcastResult);
                         this.consoleResult += (broadcastResult.code) + '\n';
+                        this.consoleResult += window.tronWeb.toUtf8(broadcastResult.message) + '\n';
                     }
                     this.deploying = false;
                 }
@@ -210,8 +211,8 @@
                     this.deploying = false;
                 }
             },
-            saveAs: function(){
-                SaveToFile(this.source,this.currentContractName.substring(1)+window.Date.now()+".solc")
+            saveAs: function() {
+                SaveToFile(this.source, this.currentContractName.substring(1) + window.Date.now() + ".solc")
             }
         }
     }
