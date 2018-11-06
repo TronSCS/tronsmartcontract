@@ -12,7 +12,7 @@
         </div>
          <VueInput v-model="amountFreeze" placeholder="Type amount TRX to Freeze"/>
           <VueButton class="primary"  @click="freeze()" :loading-secondary="loading">❄️ Freeze to get Energy</VueButton>
-          <p><small class="field">(1 energy = 100 sun)</small></p>
+          <p><small class="field">(1 TRX = 10,000 Energy)</small></p>
     </div>
 </template>
 <script>
@@ -46,33 +46,40 @@
                 this.currentNetWork = window.tronWeb.eventServer == "https://api.trongrid.io" ? "Main net" : "Testnet";
                 this.balance = (await window.tronWeb.trx.getBalance(this.defaultAddress.hex)) / 1000000;
                 let account = (await window.tronWeb.trx.getAccount(this.defaultAddress.hex));
-                this.energyUsed = account.account_resource.energy_usage
-                this.totalEnergy = account.account_resource.frozen_balance_for_energy.frozen_balance/100;
+                if (account.account_resource != undefined) {
+                    this.energyUsed = account.account_resource.energy_usage? account.account_resource.energy_usage:0;
+                    this.totalEnergy = account.account_resource.frozen_balance_for_energy?(account.account_resource.frozen_balance_for_energy.frozen_balance / 100):0;
+                }
+                else {
+                    this.energyUsed = 0;
+                    this.totalEnergy = 0;
+                }
             },
             formatNum: function(input) {
-                let fixNumber=Number(input);
+                let fixNumber = Number(input);
                 return FormatNumber(fixNumber);
             },
             freeze: async function() {
-                try{
-                    this.loading=true;
-                    let ts = await window.tronWeb.transactionBuilder.freezeBalance(window.tronWeb.defaultAddress.hex, this.amountFreeze*1000000, 3, "ENERGY")
+                try {
+                    this.loading = true;
+                    let ts = await window.tronWeb.transactionBuilder.freezeBalance(window.tronWeb.defaultAddress.hex, this.amountFreeze * 1000000, 3, "ENERGY")
                     let usign = await window.tronWeb.trx.sign(ts)
                     let broadcast = await window.tronWeb.trx.broadcast(usign)
                     console.log(broadcast)
-                    if(broadcast.result){
-                        this.changeAddress()
-                        this.$alert("Success","Freeze "+this.amountFreeze+" done!")
+                    if (broadcast.result) {
+                        this.$alert("Success", "Freeze " + this.amountFreeze + " done!")
+                        while(this.balance== (await window.tronWeb.trx.getBalance(this.defaultAddress.hex)) / 1000000){};
+                        this.changeAddress();
+                                               
                     }
-                    else
-                    {
-                        this.$alert("Error","Fail to freeze")
+                    else {
+                        this.$alert("Error", "Fail to freeze")
                     }
                 }
-                catch(e){
-                    this.$alert("Error","Fail to freeze: "+e)
+                catch (e) {
+                    this.$alert("Error", "Fail to freeze: " + e)
                 }
-                this.loading=false;
+                this.loading = false;
             }
         }
     }
