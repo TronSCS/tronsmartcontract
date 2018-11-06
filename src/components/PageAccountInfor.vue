@@ -65,10 +65,11 @@
                     let ts = await window.tronWeb.transactionBuilder.freezeBalance(window.tronWeb.defaultAddress.hex, this.amountFreeze * 1000000, 3, "ENERGY")
                     let usign = await window.tronWeb.trx.sign(ts)
                     let broadcast = await window.tronWeb.trx.broadcast(usign)
-                    console.log(broadcast)
                     if (broadcast.result) {
                         this.$alert("Success", "Freeze " + this.amountFreeze + " done!")
-                        while(this.balance== (await window.tronWeb.trx.getBalance(this.defaultAddress.hex)) / 1000000){};
+                        while(this.balance== (await window.tronWeb.trx.getBalance(this.defaultAddress.hex)) / 1000000){
+                            console.log()
+                        }
                         this.changeAddress();
                                                
                     }
