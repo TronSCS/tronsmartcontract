@@ -162,6 +162,7 @@
                     if (!window.tronWeb) throw 'You must install Tronlink to interact with contract';
                     if (!(window.tronWeb && window.tronWeb.ready)) throw 'You must login Tronlink to interact with contract';
                     this.deployBox.show = false;
+                    this.success=true;
                     this.deploying = true;
                     this.consoleResult = "";
                     this.consoleResult += "Deploy " + this.currentContractDeployName + '\n';
@@ -178,20 +179,22 @@
                         let transactionInfo = {};
                         do {
                             transactionInfo = await window.tronWeb.trx.getTransactionInfo(signed.txID);
-                            console.log(transactionInfo);
-                            if (transactionInfo.id && transactionInfo.receipt.result === 'SUCCESS') {
-                                if (transactionInfo.receipt.result) {
+                            if (transactionInfo.id) {
+                                if (transactionInfo.receipt.result=="SUCCESS") {
                                     this.success = true;
                                     this.consoleResult += (`SUCCESSFULLY deployed ${this.currentContractDeployName}. Cost: ${(transactionInfo.receipt.energy_fee?transactionInfo.receipt.energy_fee:0) / 1000000} TRX, ${FormatNumber(transactionInfo.receipt.energy_usage)} energy`) + '\n';
                                     let base58Adress = window.tronWeb.address.fromHex(signed.contract_address);
                                     this.consoleResult += (`Contract address: <a target='_blank' href='#/interact/${base58Adress}'>${base58Adress}</a>`) + '\n';
                                 }
-                                else {
+                                else if(transactionInfo.receipt.result=="OUT_OF_ENERGY"){
                                     this.success = false;
-                                    this.consoleResult += (`FAILED deploying ${this.currentContractDeployName}. Cost: ${transactionInfo.receipt.energy_fee / 1000000} TRX.`) + '\n';
-                                    this.consoleResult += (`transaction info:`) + '\n';
-                                    this.consoleResult += (transactionInfo) + '\n';
-
+                                    this.consoleResult += (`FAILED deploying ${this.currentContractDeployName}. You lost: ${(transactionInfo.receipt.energy_fee?transactionInfo.receipt.energy_fee:0) / 1000000} TRX`) + '\n';
+                                    this.consoleResult += (`Reason: ${window.tronWeb.toUtf8(transactionInfo.resMessage)}`)
+                                }
+                                else{
+                                    this.success = false;
+                                    this.consoleResult += (`FAILED deploying ${this.currentContractDeployName}`)
+                                    this.consoleResult += (`Transaction Info: ${JSON.parse(transactionInfo)}`)
                                 }
                             }
                         } while (!transactionInfo.id);
