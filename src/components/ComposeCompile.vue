@@ -178,8 +178,8 @@
                         let transactionInfo = {};
                         do {
                             transactionInfo = await window.tronWeb.trx.getTransactionInfo(signed.txID);
+                            console.log(transactionInfo);
                             if (transactionInfo.id && transactionInfo.receipt.result === 'SUCCESS') {
-                                console.log(transactionInfo);
                                 if (transactionInfo.receipt.result) {
                                     this.success = true;
                                     this.consoleResult += (`SUCCESSFULLY deployed ${this.currentContractDeployName}. Cost: ${(transactionInfo.receipt.energy_fee?transactionInfo.receipt.energy_fee:0) / 1000000} TRX, ${FormatNumber(transactionInfo.receipt.energy_usage)} energy`) + '\n';

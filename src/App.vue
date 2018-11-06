@@ -7,7 +7,7 @@
           <VueGroupButton class="round" value="PageInteractSmartContract" icon-left="visibility">Interact</VueGroupButton>
           <VueGroupButton class="round" value="PageComposeSmartContract" icon-left="code">Compose</VueGroupButton>
           <VueGroupButton class="round" value="PageVerifySmartContract" icon-left="verified_user">Verify</VueGroupButton>
-          <VueGroupButton class="round" value="PageAccountInfor" icon-left="account_balance_wallet">Account Infor</VueGroupButton>
+          <VueGroupButton class="round" value="PageAccountInfor" icon-left="account_balance_wallet">Account Info</VueGroupButton>
           <VueGroupButton class="round" value="PageAuthor" icon-left="help">About us</VueGroupButton>
     </VueGroup>
      <div class="content">
