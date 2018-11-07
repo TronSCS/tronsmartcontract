@@ -6,13 +6,15 @@
         <p>In base58: {{defaultAddress.base58}}</p>
         <div class="balance">
             <p class="field">Balance: </p><p class="number">{{formatNum(balance)}}</p><p class="unit">TRX</p>
+            <p style="grid-column:1/4"><VueButton style="width:100%" class="warning"  @click="faucet()" :loading-secondary="faucetloading">Faucet 10k Shatas Test TRX</VueButton></p>
             <p class="field">Total Energy: </p><p class="number">{{formatNum(totalEnergy)}}</p><p class="unit"> </p>
             <p class="field">Energy used: </p><p class="number">{{formatNum(energyUsed)}}</p><p class="unit"> </p>
             <p class="field">Remain Energy: </p><p class="number">{{formatNum(totalEnergy-energyUsed)}}</p><p class="unit"> </p>
+            <VueInput v-model="amountFreeze" placeholder="Type amount TRX to Freeze"/>
+            <VueButton style="grid-column:2/4" class="primary"  @click="freeze()" :loading-secondary="loading">❄️ Freeze to get Energy</VueButton>
+            <p style="text-align:center;grid-column:1/4"><small class="field">(1 TRX = 10,000 Energy)</small></p>
         </div>
-         <VueInput v-model="amountFreeze" placeholder="Type amount TRX to Freeze"/>
-          <VueButton class="primary"  @click="freeze()" :loading-secondary="loading">❄️ Freeze to get Energy</VueButton>
-          <p><small class="field">(1 TRX = 10,000 Energy)</small></p>
+         
     </div>
 </template>
 <script>
@@ -26,7 +28,8 @@
                 totalEnergy: 0,
                 energyUsed: 0,
                 amountFreeze: null,
-                loading: false
+                loading: false,
+                faucetloading:false
             }
         },
         mounted() {
@@ -47,8 +50,8 @@
                 this.balance = (await window.tronWeb.trx.getBalance(this.defaultAddress.hex)) / 1000000;
                 let account = (await window.tronWeb.trx.getAccount(this.defaultAddress.hex));
                 if (account.account_resource != undefined) {
-                    this.energyUsed = account.account_resource.energy_usage? account.account_resource.energy_usage:0;
-                    this.totalEnergy = account.account_resource.frozen_balance_for_energy?(account.account_resource.frozen_balance_for_energy.frozen_balance / 100):0;
+                    this.energyUsed = account.account_resource.energy_usage ? account.account_resource.energy_usage : 0;
+                    this.totalEnergy = account.account_resource.frozen_balance_for_energy ? (account.account_resource.frozen_balance_for_energy.frozen_balance / 100) : 0;
                 }
                 else {
                     this.energyUsed = 0;
@@ -67,11 +70,11 @@
                     let broadcast = await window.tronWeb.trx.broadcast(usign)
                     if (broadcast.result) {
                         this.$alert("Success", "Freeze " + this.amountFreeze + " done!")
-                        while(this.balance== (await window.tronWeb.trx.getBalance(this.defaultAddress.hex)) / 1000000){
+                        while (this.balance == (await window.tronWeb.trx.getBalance(this.defaultAddress.hex)) / 1000000) {
                             console.log()
                         }
                         this.changeAddress();
-                                               
+
                     }
                     else {
                         this.$alert("Error", "Fail to freeze")
@@ -81,6 +84,21 @@
                     this.$alert("Error", "Fail to freeze: " + e)
                 }
                 this.loading = false;
+            },
+            faucet: async function() {
+                this.faucetloading=true;
+                let tx = await window.tronWeb.fullNode.request("/wallet/easytransferbyprivate", { "privateKey": "4E49E081F09C5A9F0A6A9D381FCEDEF130A4CC872AC9592062EA16314381E6A3", "toAddress": window.tronWeb.defaultAddress.hex, "amount": 10000000000 }, 'post')
+                if (tx.result.result) {
+                    this.$alert("Success", "Faucet success. Enjoy it!")
+                }
+                else {
+                    this.$alert("Error", "Faucet failed!")
+                }
+                while (this.balance == (await window.tronWeb.trx.getBalance(this.defaultAddress.hex)) / 1000000) {
+                    console.log()
+                }
+                this.changeAddress();
+                this.faucetloading=false;
             }
         }
     }
