@@ -17,7 +17,7 @@ install:
     - yarn global add @vue/cli
     - export PATH=$PATH:$HOME/.yarn/bin
     - vue --version
-    - yarn install
+    - yarn install --network-timeout 1000000
 script:
   - yarn lint
   - yarn build --base-href https://tronsmartcontract.space/
