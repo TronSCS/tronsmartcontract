@@ -33,7 +33,6 @@
 
 <script>
   import EntryContract from './EntryContract.vue'
-  import { hex2Utf8 } from '@/utils/Decode'
   import { getTronExplorer } from '@/utils/Tron'
   export default {
     name: 'InteractSmartContract',
@@ -43,7 +42,7 @@
     computed: {
       abi: function() { return this.contract.abi },
       address: function() { return this.contract.contract_address },
-      contractName: function() { return hex2Utf8(this.contract.name) },
+      contractName: function() { return this.contract.name },
       creator: function() { return window.tronWeb.address.fromHex(this.contract.origin_address) },
       tronExplorerLink: function() {
         return getTronExplorer() + "/address/" + this.creator
