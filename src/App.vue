@@ -41,19 +41,21 @@
         currentPage: ""
       }
     },
-    mounted(){
-      this.currentPage=this.$router.currentRoute.name;
-      this.$store.state.smartContractCode=code;
+    mounted() {
+      this.currentPage = this.$router.currentRoute.name;
+      this.$store.state.smartContractCode = code;
     },
     computed: {
       alertbox() {
         return this.$store.state.alertbox
       }
     },
-    watch:{
-      currentPage:function(val){
+    watch: {
+      currentPage: function(val) {
         console.log(val);
-        this.$router.push({name:val});
+        if (val != null) {
+          this.$router.push({ name: val });
+        }
       }
     },
     methods: {
