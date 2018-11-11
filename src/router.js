@@ -21,13 +21,8 @@ export default new Router({
       component: PageInteractSmartContract,
     },
     {
-      path: '/compose/',
+      path: '/compose/:Source?',
       name: 'PageComposeSmartContract',
-      component: PageComposeSmartContract,
-    },
-    {
-      path: '/composeit/:source',
-      name: 'PageComposeItSmartContract',
       component: PageComposeSmartContract,
     },
     {

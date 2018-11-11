@@ -22,10 +22,10 @@
             }
         },
         async mounted() {
-            console.log(this.$route.params.source);
+            console.log(this.$route.params.Source);
             if (this.$route.params.Source) {
                 console.log(this.$route.params.Source);
-                let val= (await axios.get(this.$route.params.Source)).data;
+                let val= (await axios.get(`https://raw.githubusercontent.com/TronSCS/tronsmartcontractspace.sharecode/master/${this.$route.params.Source}.sol`)).data;
                 this.$store.commit("setSmartContractCode", val);
             }
         },
