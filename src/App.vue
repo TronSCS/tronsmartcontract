@@ -8,7 +8,7 @@
       <a href="#/compose" class="item" :class="{ isActive: (currentPage=='PageComposeSmartContract')}" target="_blank"><VueIcon icon="code" class="small"/>Compose</a>
       <a href="#/verify" class="item" :class="{ isActive: (currentPage=='PageVerifySmartContract')}" target="_blank"><VueIcon icon="verified_user" class="small"/>Verify</a>
       <a href="#/account" class="item" :class="{ isActive: (currentPage=='PageAccountInfor')}" target="_blank"><VueIcon icon="account_balance_wallet" class="small"/>Account Info</a>
-      <a href="#/about" class="item" :class="{ isActive: (currentPage=='PageAuthor')}" target="_blank"><VueIcon icon="help" class="small"/>About me</a>
+      <a href="#/author" class="item" :class="{ isActive: (currentPage=='PageAuthor')}" target="_blank"><VueIcon icon="help" class="small"/>About me</a>
     </div>
      <div class="content">
       <router-view/>
