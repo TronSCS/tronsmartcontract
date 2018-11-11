@@ -12,6 +12,8 @@
         <VueButton :disabled="!showDeploy" :loading-secondary="deploying" class="accent" icon-left="cloud_done" @click="showDeployBox()">Deploy it!</VueButton>
         <VueButton class="icon-button success" :icon-left="showResult?'expand_more':'expand_less'" @click="showResult=!showResult"></VueButton>
         <VueButton class="primary" @click="saveAs()">Save to File</VueButton>
+        <VueButton class="warning" @click="shareIt()" icon-left="share">Get link to share</VueButton>
+
         <div class="compile-result" :style="{color: (success?'green':'red'), display: (showResult?'block':'none')}" v-html="consoleResult">{{consoleResult}}</div>
         <VueModal
         v-if="deployBox.show"
@@ -33,6 +35,17 @@
                 <VueButton class="danger" @click="deployBox.show=false">Close</VueButton>
             </div>
       </VueModal>
+       <VueModal
+        v-if="shareItBox.show"
+        :title="shareItBox.title"
+        locked
+        class="small"
+        >
+           <VueInput  :loading-left="loadingShareIt" v-model="shareLink" style="width:300px;" placeholder="Waiting for build sharelink..."/>
+            <div slot="footer" class="actions">
+                <VueButton class="danger" @click="shareItBox.show=false">Close</VueButton>
+            </div>
+      </VueModal>
     </div>
 </template>
 <script>
@@ -40,6 +53,7 @@
     import browserSolc from 'browser-solc';
     import { FormatNumber } from '@/utils/FormatNumber'
     import { SaveToFile } from '@/utils/SaveToFile'
+    import axios from 'axios'
 
     const getCompiler = function(version) {
         return new Promise((resolve, reject) => {
@@ -75,7 +89,13 @@
                 currentContractDeployInputValues: [],
                 currentContractDeployName: "",
                 showDeploy: false,
-                showResult: true
+                showResult: true,
+                shareItBox: {
+                    show: false,
+                    title: "Share your code"
+                },
+                loadingShareIt:true,
+                shareLink:""
             }
         },
         computed: {
@@ -162,7 +182,7 @@
                     if (!window.tronWeb) throw 'You must install Tronlink to interact with contract';
                     if (!(window.tronWeb && window.tronWeb.ready)) throw 'You must login Tronlink to interact with contract';
                     this.deployBox.show = false;
-                    this.success=true;
+                    this.success = true;
                     this.deploying = true;
                     this.consoleResult = "";
                     this.consoleResult += "Deploy " + this.currentContractDeployName + '\n';
@@ -180,18 +200,18 @@
                         do {
                             transactionInfo = await window.tronWeb.trx.getTransactionInfo(signed.txID);
                             if (transactionInfo.id) {
-                                if (transactionInfo.receipt.result=="SUCCESS") {
+                                if (transactionInfo.receipt.result == "SUCCESS") {
                                     this.success = true;
                                     this.consoleResult += (`SUCCESSFULLY deployed ${this.currentContractDeployName}. Cost: ${(transactionInfo.receipt.energy_fee?transactionInfo.receipt.energy_fee:0) / 1000000} TRX, ${FormatNumber(transactionInfo.receipt.energy_usage)} energy`) + '\n';
                                     let base58Adress = window.tronWeb.address.fromHex(signed.contract_address);
                                     this.consoleResult += (`Contract address: <a target='_blank' href='#/interact/${base58Adress}'>${base58Adress}</a>`) + '\n';
                                 }
-                                else if(transactionInfo.receipt.result=="OUT_OF_ENERGY"){
+                                else if (transactionInfo.receipt.result == "OUT_OF_ENERGY") {
                                     this.success = false;
                                     this.consoleResult += (`FAILED deploying ${this.currentContractDeployName}. You lost: ${(transactionInfo.receipt.energy_fee?transactionInfo.receipt.energy_fee:0) / 1000000} TRX`) + '\n';
                                     this.consoleResult += (`Reason: ${window.tronWeb.toUtf8(transactionInfo.resMessage)}`)
                                 }
-                                else{
+                                else {
                                     this.success = false;
                                     this.consoleResult += (`FAILED deploying ${this.currentContractDeployName}`)
                                     this.consoleResult += (`Transaction Info: ${JSON.parse(transactionInfo)}`)
@@ -217,6 +237,20 @@
             },
             saveAs: function() {
                 SaveToFile(this.source, this.currentContractName.substring(1) + window.Date.now() + ".solc")
+            },
+            shareIt: async function(){
+                this.shareItBox.show=true;
+                this.loadingShareIt=true;
+                let result=await axios.post('https://tronscsshareit.herokuapp.com/shareit',{source:this.source});
+                console.log(result  )
+                if(result.data.result=="SUCCESS"){
+                    this.shareLink=`https://tronsmartcontract.com/#/compose/${result.data.fileName}`
+                }
+                else
+                {
+                    this.shareLink="Failed to share"
+                }
+                this.loadingShareIt=false;
             }
         }
     }

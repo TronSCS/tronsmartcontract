@@ -25,7 +25,7 @@
             console.log(this.$route.params.Source);
             if (this.$route.params.Source) {
                 console.log(this.$route.params.Source);
-                let val= (await axios.get(`https://raw.githubusercontent.com/TronSCS/tronsmartcontractspace.sharecode/master/${this.$route.params.Source}.sol`)).data;
+                let val= (await axios.get(`https://raw.githubusercontent.com/TronSCS/tronsmartcontract.shareit/master/${this.$route.params.Source}.sol`)).data;
                 this.$store.commit("setSmartContractCode", val);
             }
         },
