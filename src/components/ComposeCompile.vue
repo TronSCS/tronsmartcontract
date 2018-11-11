@@ -41,8 +41,9 @@
         locked
         class="small"
         >
-           <VueInput  :loading-left="loadingShareIt" v-model="shareLink" style="width:300px;" placeholder="Waiting for build sharelink..."/>
+           <VueInput  :loading-left="loadingShareIt" v-model="shareLink" style="width:400px;" placeholder="Waiting for build sharelink..."/>
             <div slot="footer" class="actions">
+                <VueButton class="success" v-copy="shareLink" v-copy:callback="updateStatusCopy">{{this.statusCopy}}</VueButton>
                 <VueButton class="danger" @click="shareItBox.show=false">Close</VueButton>
             </div>
       </VueModal>
@@ -95,7 +96,8 @@
                     title: "Share your code"
                 },
                 loadingShareIt:true,
-                shareLink:""
+                shareLink:"",
+                statusCopy:"Copy to Clipboard"
             }
         },
         computed: {
@@ -240,6 +242,8 @@
             },
             shareIt: async function(){
                 this.shareItBox.show=true;
+                this.shareLink="";
+                this.statusCopy="Copy to Clipboard"
                 this.loadingShareIt=true;
                 let result=await axios.post('https://tronscsshareit.herokuapp.com/shareit',{source:this.source});
                 console.log(result  )
@@ -251,6 +255,9 @@
                     this.shareLink="Failed to share"
                 }
                 this.loadingShareIt=false;
+            },
+            updateStatusCopy:function(){
+                this.statusCopy="Copied!!!"
             }
         }
     }

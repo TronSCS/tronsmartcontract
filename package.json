@@ -12,6 +12,7 @@
     "axios": "^0.18.0",
     "browser-solc": "^1.0.0",
     "raw-loader": "^0.5.1",
+    "v-copy": "^0.1.0",
     "vue": "^2.5.17",
     "vue-monaco": "^0.2.0",
     "vue-router": "^3.0.1",

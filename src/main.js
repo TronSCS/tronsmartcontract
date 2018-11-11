@@ -5,7 +5,9 @@ import router from './router'
 import store from './store'
 import VueTypedJs from 'vue-typed-js'
 import '@vue/ui/dist/vue-ui.css'
+import Copy from 'v-copy'
 
+Vue.use(Copy)
 Vue.use(VueUi)
 Vue.use(VueTypedJs)
 Vue.config.productionTip = false
