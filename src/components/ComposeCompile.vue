@@ -276,7 +276,7 @@
                 let result = await axios.post('https://tronscsshareit.herokuapp.com/shareit', { source: this.source });
                 console.log(result)
                 if (result.data.result == "SUCCESS") {
-                    this.shareLink = `https://tronsmartcontract.com/#/compose/${result.data.fileName}`
+                    this.shareLink = `https://tronsmartcontract.space/#/compose/${result.data.fileName}`
                 }
                 else {
                     this.shareLink = "Failed to share"
