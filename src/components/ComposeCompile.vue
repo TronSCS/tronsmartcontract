@@ -10,11 +10,10 @@
           <VueSelectButton v-for="(item,key) in contracts" :key="key" :value="key" :label="key"/>
         </VueSelect>
         <VueButton :disabled="!showDeploy" :loading-secondary="deploying" class="accent" icon-left="cloud_done" @click="showDeployBox()">Deploy it!</VueButton>
-        <VueButton class="icon-button success" :icon-left="showResult?'expand_more':'expand_less'" @click="showResult=!showResult"></VueButton>
         <VueButton class="primary" @click="saveAs()">Save to File</VueButton>
         <VueButton class="warning" @click="shareIt()" icon-left="share">Get link to share</VueButton>
-
-        <div class="compile-result" :style="{color: (success?'green':'red'), display: (showResult?'block':'none')}" v-html="consoleResult">{{consoleResult}}</div>
+        <VueButton class="success" :icon-left="showResult?'expand_more':'expand_less'" @click="showResult=!showResult">{{showResult?'Hide':'Show'}} Result</VueButton>
+        <div class="compile-result" :style="{color: (success?'green':'red'), display: (showResult?'block':'none')}" v-html="consoleResult"></div>
         <VueModal
         v-if="deployBox.show"
         :title="deployBox.title"
@@ -77,9 +76,6 @@
                 currentSolcVer: "",
                 compiler: {},
                 loading: false,
-                success: false,
-                consoleResult: "",
-                contracts: [],
                 currentContractName: "",
                 deploying: false,
                 deployBox: {
@@ -89,18 +85,49 @@
                 currentContractDeployInputs: [],
                 currentContractDeployInputValues: [],
                 currentContractDeployName: "",
-                showDeploy: false,
                 showResult: true,
                 shareItBox: {
                     show: false,
                     title: "Share your code"
                 },
-                loadingShareIt:true,
-                shareLink:"",
-                statusCopy:"Copy to Clipboard"
+                loadingShareIt: true,
+                shareLink: "",
+                statusCopy: "Copy to Clipboard"
             }
         },
         computed: {
+            showDeploy: {
+                get() {
+                    return this.$store.state.showDeploy
+                },
+                set(val) {
+                    this.$store.commit("setShowDeploy", val)
+                }
+            },
+            contracts: {
+                get() {
+                    return this.$store.state.contracts
+                },
+                set(val) {
+                    this.$store.commit("setContracts", val)
+                }
+            },
+            success: {
+                get() {
+                    return this.$store.state.resultCompile.success
+                },
+                set(val) {
+                    this.$store.commit("setResultSuccess", val)
+                }
+            },
+            consoleResult: {
+                get() {
+                    return this.$store.state.resultCompile.consoleResult
+                },
+                set(val) {
+                    this.$store.commit("setResultContent", val)
+                }
+            },
             solcVersFormat: function() {
                 let retValue = [];
                 for (let key in this.solcVers) {
@@ -146,8 +173,8 @@
         },
         methods: {
             complie: async function() {
-                this.showDeploy = false;
                 this.loading = true;
+                this.showDeploy = false;
                 this.contracts = [];
                 this.compiler = await getCompiler(this.currentSolcVer);
                 let result = this.compiler(this.source, 1);
@@ -167,6 +194,7 @@
                     }
                     this.contracts = result.contracts;
                     this.showDeploy = true;
+
                 }
             },
             showDeployBox: function() {
@@ -240,24 +268,23 @@
             saveAs: function() {
                 SaveToFile(this.source, this.currentContractName.substring(1) + window.Date.now() + ".solc")
             },
-            shareIt: async function(){
-                this.shareItBox.show=true;
-                this.shareLink="";
-                this.statusCopy="Copy to Clipboard"
-                this.loadingShareIt=true;
-                let result=await axios.post('https://tronscsshareit.herokuapp.com/shareit',{source:this.source});
-                console.log(result  )
-                if(result.data.result=="SUCCESS"){
-                    this.shareLink=`https://tronsmartcontract.com/#/compose/${result.data.fileName}`
+            shareIt: async function() {
+                this.shareItBox.show = true;
+                this.shareLink = "";
+                this.statusCopy = "Copy to Clipboard"
+                this.loadingShareIt = true;
+                let result = await axios.post('https://tronscsshareit.herokuapp.com/shareit', { source: this.source });
+                console.log(result)
+                if (result.data.result == "SUCCESS") {
+                    this.shareLink = `https://tronsmartcontract.com/#/compose/${result.data.fileName}`
                 }
-                else
-                {
-                    this.shareLink="Failed to share"
+                else {
+                    this.shareLink = "Failed to share"
                 }
-                this.loadingShareIt=false;
+                this.loadingShareIt = false;
             },
-            updateStatusCopy:function(){
-                this.statusCopy="Copied!!!"
+            updateStatusCopy: function() {
+                this.statusCopy = "Copied!!!"
             }
         }
     }
