@@ -78,14 +78,14 @@ import {getTronExplorer} from '@/utils/Tron'
                 this.loading = true;
                 let result = await window.tronWeb.getEventResult(this.address, 0, eventName);
                 result = result.filter((thing, index, self) => self.findIndex(t => t.transaction === thing.transaction && t.timestamp === thing.timestamp) === index)
-                this.result = "<table class='event-table'>";
+                this.result = "<div class='event-grid'>";
 
                 result.forEach(i => {
                     let { timestamp, transaction, result } = i;
                     let date = new Date(timestamp)
-                    this.result += "<tr><td>⚡ " + (date.toLocaleString() + "</td><td><a target='_blank' href='" + getTronExplorer + "/transaction/" + transaction + "'>" + transaction.substr(0, 15) + "...</a></td><td>Result: " + JSON.stringify(result) + '</td></tr>');
+                    this.result += "<div>⚡" + (date.toLocaleString() + "</div><div><a target='_blank' href='" + getTronExplorer()+ "/transaction/" + transaction + "'>" + transaction.substr(0, 15) + "...</a></div><div>Result: " + JSON.stringify(result) + '</div>');
                 })
-                this.result += "</table>"
+                this.result += "</div>"
                 this.loading = false;
             }
         }
@@ -114,7 +114,9 @@ import {getTronExplorer} from '@/utils/Tron'
     .contract-entry .vue-ui-button {
         margin: 10px;
     }
-    .event-table{
+    .event-grid{
         font-size:11px;
+        display: grid;
+        grid-template-columns: 150px 120px auto;
     }
 </style>
