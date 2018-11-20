@@ -232,13 +232,13 @@
                             if (transactionInfo.id) {
                                 if (transactionInfo.receipt.result == "SUCCESS") {
                                     this.success = true;
-                                    this.consoleResult += (`SUCCESSFULLY deployed ${this.currentContractDeployName}. Cost: ${(transactionInfo.receipt.energy_fee?transactionInfo.receipt.energy_fee:0) / 1000000} TRX, ${FormatNumber(transactionInfo.receipt.energy_usage)} energy`) + '\n';
+                                    this.consoleResult += (`SUCCESSFULLY deployed ${this.currentContractDeployName}. Cost: ${(transactionInfo.receipt.energy_fee?FormatNumber(transactionInfo.receipt.energy_fee):0) / 1000000} TRX, ${transactionInfo.receipt.energy_usage?FormatNumber(transactionInfo.receipt.energy_usage):0} energy`) + '\n';
                                     let base58Adress = window.tronWeb.address.fromHex(signed.contract_address);
                                     this.consoleResult += (`Contract address: <a target='_blank' href='#/interact/${base58Adress}'>${base58Adress}</a>`) + '\n';
                                 }
                                 else if (transactionInfo.receipt.result == "OUT_OF_ENERGY") {
                                     this.success = false;
-                                    this.consoleResult += (`FAILED deploying ${this.currentContractDeployName}. You lost: ${(transactionInfo.receipt.energy_fee?transactionInfo.receipt.energy_fee:0) / 1000000} TRX`) + '\n';
+                                    this.consoleResult += (`FAILED deploying ${this.currentContractDeployName}. You lost: ${(transactionInfo.receipt.energy_fee?FormatNumber(transactionInfo.receipt.energy_fee):0) / 1000000} TRX`) + '\n';
                                     this.consoleResult += (`Reason: ${window.tronWeb.toUtf8(transactionInfo.resMessage)}`)
                                 }
                                 else {
