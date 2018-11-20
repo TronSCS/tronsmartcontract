@@ -273,7 +273,7 @@
                 this.shareLink = "";
                 this.statusCopy = "Copy to Clipboard"
                 this.loadingShareIt = true;
-                let result = await axios.post('https://tronscsshareit.herokuapp.com/shareit', { source: this.source });
+                let result = await axios.post('https://tronscsbackend.herokuapp.com/shareit', { source: this.source });
                 console.log(result)
                 if (result.data.result == "SUCCESS") {
                     this.shareLink = `https://tronsmartcontract.space/#/compose/${result.data.fileName}`
