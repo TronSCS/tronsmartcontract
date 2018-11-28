@@ -49,9 +49,10 @@
                 this.currentNetWork = window.tronWeb.eventServer == "https://api.trongrid.io" ? "Main net" : "Testnet";
                 this.balance = (await window.tronWeb.trx.getBalance(this.defaultAddress.hex)) / 1000000;
                 let account = (await window.tronWeb.trx.getAccount(this.defaultAddress.hex));
+                let accountResource=(await window.tronWeb.trx.getAccountResources(this.defaultAddress.hex));
+                this.totalEnergy = accountResource.EnergyLimit?accountResource.EnergyLimit:0;
                 if (account.account_resource != undefined) {
                     this.energyUsed = account.account_resource.energy_usage ? account.account_resource.energy_usage : 0;
-                    this.totalEnergy = account.account_resource.frozen_balance_for_energy ? (account.account_resource.frozen_balance_for_energy.frozen_balance / 100) : 0;
                 }
                 else {
                     this.energyUsed = 0;
