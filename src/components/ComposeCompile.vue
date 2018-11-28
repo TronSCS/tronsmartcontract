@@ -203,7 +203,7 @@
                     this.currentContractDeployInputs = constructorFunction.inputs;
                 else
                     this.currentContractDeployInputs = [];
-                this.currentContractDeployName = this.currentContractName.substring(1);
+                this.currentContractDeployName = this.currentContractName;
                 this.deployBox.show = true;
 
             },
