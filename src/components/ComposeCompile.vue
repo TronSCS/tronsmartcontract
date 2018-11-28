@@ -177,7 +177,7 @@
                 this.showDeploy = false;
                 this.contracts = [];
                 this.compiler = await getCompiler(this.currentSolcVer);
-                let result = this.compiler(this.source, 1);
+                let result = this.compiler({sources:{'hi':this.source},settings:{optimizer: {enabled: true, runs:0}}},1);
                 console.log(result);
                 this.loading = false;
                 if (result.errors) {
